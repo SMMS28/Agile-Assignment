@@ -1,13 +1,340 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketify - E-commerce Marketplace</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInDown { animation: fadeInDown 0.3s ease-out forwards; }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-slideInLeft { animation: slideInLeft 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="font-sans bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // Mock data
+        const ALL_PRODUCTS = [
+            { id: 1, name: "Handmade Ceramic Vase", description: "A beautiful, one-of-a-kind vase for your home decor.", price: 45.00, imageUrl: "https://images.unsplash.com/photo-1578500529168-161d71e2275b?q=80&w=600&h=400&auto=format&fit=crop", imageText: "Handmade Ceramic Vase", category: "Home & Garden" },
+            { id: 2, name: "Vintage Film Camera", description: "Capture memories the old-fashioned way. In working condition.", price: 120.00, imageUrl: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&h=400&auto=format&fit=crop", imageText: "Vintage Film Camera", category: "Collectibles" },
+            { id: 3, name: "Artisan Leather Wallet", description: "Hand-stitched wallet made from genuine full-grain leather.", price: 75.00, imageUrl: "https://images.unsplash.com/photo-1614031688524-783b52ca365a?q=80&w=600&h=400&auto=format&fit=crop", imageText: "Artisan Leather Wallet", category: "Fashion" },
+            { id: 4, name: "Abstract Canvas Art", description: "A unique piece of abstract art to brighten up any room.", price: 250.00, imageUrl: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=600&h=400&auto=format&fit=crop", imageText: "Abstract Canvas Art", category: "Crafts" }
+        ];
+
+        const CATEGORIES = [
+            { id: 1, name: "Fashion" },
+            { id: 2, name: "Electronics" },
+            { id: 3, name: "Home & Garden" },
+            { id: 4, name: "Jewelry" },
+            { id: 5, name: "Crafts" },
+            { id: 6, name: "Collectibles" }
+        ];
+
+        // Icon components
+        const Store = () => <span className="text-2xl">🏪</span>;
+        const Search = () => <span className="text-xl">🔍</span>;
+        const ShoppingCart = () => <span className="text-xl">🛒</span>;
+        const Menu = () => <span className="text-xl">☰</span>;
+        const ShieldCheck = () => <span className="text-2xl">🛡️</span>;
+        const Headset = () => <span className="text-2xl">🎧</span>;
+        const Globe = () => <span className="text-2xl">🌍</span>;
+        const X = () => <span className="text-xl">✕</span>;
+        const Sparkles = () => <span className="text-lg">✨</span>;
+        const ChevronRight = () => <span className="text-lg">→</span>;
+        const Sun = () => <span className="text-xl">☀️</span>;
+        const Moon = () => <span className="text-xl">🌙</span>;
+        const Plus = () => <span className="text-sm">+</span>;
+        const Minus = () => <span className="text-sm">−</span>;
+        const Trash2 = () => <span className="text-lg">🗑️</span>;
+
+        // Product Card Component
+        const ProductCard = ({ product, onAddToCart }) => (
+            <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group dark:bg-slate-800 dark:border dark:border-slate-700">
+                <div className="overflow-hidden">
+                    <img src={product.imageUrl} alt={product.imageText} className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" />
+                </div>
+                <div className="p-6">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{product.category}</p>
+                    <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-2 truncate">{product.name}</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4 h-12 overflow-hidden">{product.description}</p>
+                    <div className="flex justify-between items-center">
+                        <span className="text-2xl font-bold text-slate-800 dark:text-slate-200">${product.price.toFixed(2)}</span>
+                        <button onClick={() => onAddToCart(product)} className="bg-amber-50 text-amber-600 font-semibold py-2 px-4 rounded-lg hover:bg-amber-100 transition-all duration-300 flex items-center gap-2 transform hover:scale-105 dark:bg-amber-900/50 dark:text-amber-300 dark:hover:bg-amber-900">
+                            <ShoppingCart /> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Header Component
+        const Header = ({ setPage, activePage, theme, setTheme, onCartClick, cartItemCount, onAddToCart }) => {
+            const [isSearchOpen, setIsSearchOpen] = useState(false);
+            const [searchTerm, setSearchTerm] = useState('');
+            const headerRef = useRef(null);
+
+            const searchResults = useMemo(() => {
+                if (!searchTerm.trim()) return [];
+                return ALL_PRODUCTS.filter(p =>
+                    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }, [searchTerm]);
+            
+            const navLinkClasses = (page) => 
+                `pb-1 border-b-2 transition-all duration-300 ${activePage === page ? 'text-amber-500 border-amber-500' : 'text-slate-600 border-transparent hover:text-amber-500 dark:text-slate-300 dark:hover:text-amber-400'}`;
+
+            const toggleTheme = () => {
+                setTheme(theme === 'light' ? 'dark' : 'light');
+            };
+
+            const handleSearchToggle = () => {
+                setIsSearchOpen(!isSearchOpen);
+                if (isSearchOpen) {
+                    setSearchTerm('');
+                }
+            }
+            
+            return (
+                <header className="sticky top-0 z-40 transition-all duration-300 bg-white/80 backdrop-blur-lg shadow-md dark:bg-slate-900/80 dark:border-b dark:border-slate-800">
+                    <nav className="container mx-auto px-6 flex justify-between items-center transition-all duration-300 py-4">
+                        <a href="#" onClick={() => setPage('home')} className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2 animate-slideInLeft">
+                            <span className="text-amber-500"><Store /></span> Marketify
+                        </a>
+                        <div className={`hidden md:flex items-center space-x-8 font-medium transition-opacity duration-300 ${isSearchOpen ? 'opacity-0 invisible w-0' : 'opacity-100 visible w-auto'}`}>
+                            <a href="#" onClick={() => setPage('home')} className={`${navLinkClasses('home')} animate-fadeInUp`}>Home</a>
+                            <a href="#" onClick={() => setPage('shop')} className={`${navLinkClasses('shop')} animate-fadeInUp`}>Shop</a>
+                            <a href="#" onClick={() => setPage('about')} className={`${navLinkClasses('about')} animate-fadeInUp`}>About Us</a>
+                            <a href="#" onClick={() => setPage('sell')} className={`${navLinkClasses('sell')} animate-fadeInUp`}>Become a Seller</a>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <button onClick={toggleTheme} className="p-2 rounded-full text-slate-600 hover:text-amber-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-amber-400 dark:hover:bg-slate-800 transition-all duration-300 transform hover:scale-110 hover:rotate-12">
+                                {theme === 'light' ? <Moon /> : <Sun />}
+                            </button>
+                            <button onClick={handleSearchToggle} className="p-2 rounded-full text-slate-600 hover:text-amber-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-amber-400 dark:hover:bg-slate-800 transition-all duration-300 transform hover:scale-110">
+                                {isSearchOpen ? <X /> : <Search />}
+                            </button>
+                            <button onClick={onCartClick} className="p-2 rounded-full text-slate-600 hover:text-amber-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-amber-400 dark:hover:bg-slate-800 transition-all duration-300 transform hover:scale-110 relative">
+                                <ShoppingCart />
+                                {cartItemCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-fadeIn">{cartItemCount}</span>
+                                )}
+                            </button>
+                            <button className="md:hidden text-slate-600 dark:text-slate-300"><Menu /></button>
+                        </div>
+                    </nav>
+                </header>
+            );
+        };
+
+        // Home Page Component
+        const HomePage = ({ setPage, onAddToCart }) => (
+            <>
+                <section className="bg-cover bg-center text-white" style={{backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1481437156560-3205f6a85705?q=80&w=1920&h=1080&auto=format&fit=crop')"}}>
+                    <div className="container mx-auto px-6 py-40 text-center">
+                        <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4 animate-fadeInUp">Unique Finds, Directly From The Creator</h1>
+                        <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto animate-fadeInUp">Discover everything from vintage treasures to handmade crafts. Buy, sell, and connect with a community of enthusiasts.</p>
+                        <button onClick={() => setPage('shop')} className="bg-amber-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 animate-fadeInUp">
+                            Explore The Shop <ChevronRight />
+                        </button>
+                    </div>
+                </section>
+                
+                <section className="py-20 bg-white dark:bg-slate-900">
+                    <div className="container mx-auto px-6 text-center">
+                        <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Featured This Week</h2>
+                        <p className="text-slate-500 dark:text-slate-400 mb-12 max-w-2xl mx-auto">A curated selection of our favorite items from talented sellers around the globe.</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {ALL_PRODUCTS.slice(0, 4).map((p, i) => 
+                                <div key={p.id} className="animate-fadeInUp">
+                                    <ProductCard product={p} onAddToCart={onAddToCart} />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </section>
+            </>
+        );
+
+        // Shop Page Component
+        const ShopPage = ({ onAddToCart }) => {
+            const [filter, setFilter] = useState('All');
+            const filteredProducts = filter === 'All' ? ALL_PRODUCTS : ALL_PRODUCTS.filter(p => p.category === filter);
+
+            return (
+                <div className="container mx-auto px-6 py-12">
+                    <h1 className="text-4xl font-bold text-slate-800 dark:text-white mb-4">Shop Our Collection</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mb-8">Find your next favorite item from thousands of unique listings.</p>
+
+                    <div className="flex space-x-2 mb-10 border-b border-slate-200 dark:border-slate-700 overflow-x-auto pb-2">
+                        <button onClick={() => setFilter('All')} className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${filter === 'All' ? 'text-amber-600 border-b-2 border-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}>All</button>
+                        {CATEGORIES.map(c => (
+                            <button key={c.id} onClick={() => setFilter(c.name)} className={`px-4 py-2 font-medium transition-colors whitespace-nowrap ${filter === c.name ? 'text-amber-600 border-b-2 border-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}>{c.name}</button>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {filteredProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} />)}
+                    </div>
+                </div>
+            );
+        };
+
+        // Cart Panel Component
+        const CartPanel = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) => {
+            const subtotal = useMemo(() => cartItems.reduce((total, item) => total + item.price * item.quantity, 0), [cartItems]);
+
+            return (
+                <>
+                    <div className={`fixed inset-0 z-50 bg-black/40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
+                    <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl z-50 transform transition-transform duration-500 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
+                        <div className="p-6 border-b dark:border-slate-700 flex justify-between items-center">
+                            <h2 className="text-2xl font-bold dark:text-white">Your Cart</h2>
+                            <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:hover:text-white"><X /></button>
+                        </div>
+                        
+                        {cartItems.length === 0 ? (
+                            <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
+                                <div className="text-slate-300 dark:text-slate-600 mb-4 text-6xl"><ShoppingCart /></div>
+                                <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200">Your cart is empty</h3>
+                                <p className="text-slate-500 mt-2">Looks like you haven't added anything yet.</p>
+                            </div>
+                        ) : (
+                            <div className="flex-grow overflow-y-auto p-6 space-y-4">
+                               {cartItems.map(item => (
+                                   <div key={item.id} className="flex items-center space-x-4 animate-fadeIn">
+                                       <img src={item.imageUrl} alt={item.imageText} className="w-20 h-20 rounded-md object-cover" />
+                                       <div className="flex-grow">
+                                           <h4 className="font-semibold dark:text-white">{item.name}</h4>
+                                           <p className="text-sm text-slate-500 dark:text-slate-400">${item.price.toFixed(2)}</p>
+                                           <div className="flex items-center mt-2">
+                                               <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="p-1 border rounded-md dark:border-slate-600"><Minus /></button>
+                                               <span className="px-3 font-semibold dark:text-white">{item.quantity}</span>
+                                               <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="p-1 border rounded-md dark:border-slate-600"><Plus /></button>
+                                           </div>
+                                       </div>
+                                       <button onClick={() => onRemoveItem(item.id)} className="text-slate-400 hover:text-red-500"><Trash2 /></button>
+                                   </div>
+                               ))}
+                            </div>
+                        )}
+                        
+                        {cartItems.length > 0 && (
+                            <div className="p-6 border-t dark:border-slate-700">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-lg font-medium text-slate-600 dark:text-slate-300">Subtotal</span>
+                                    <span className="text-2xl font-bold dark:text-white">${subtotal.toFixed(2)}</span>
+                                </div>
+                                <button className="w-full bg-amber-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-600 transition-all duration-300 shadow-lg">
+                                    Proceed to Checkout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const [page, setPage] = useState('home');
+            const [theme, setTheme] = useState('light');
+            const [cartItems, setCartItems] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+
+            useEffect(() => {
+                const root = document.documentElement;
+                root.classList.remove(theme === 'light' ? 'dark' : 'light');
+                root.classList.add(theme);
+            }, [theme]);
+
+            const handleAddToCart = (product) => {
+                setCartItems(prevItems => {
+                    const existingItem = prevItems.find(item => item.id === product.id);
+                    if (existingItem) {
+                        return prevItems.map(item =>
+                            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                        );
+                    }
+                    return [...prevItems, { ...product, quantity: 1 }];
+                });
+                setIsCartOpen(true);
+            };
+
+            const handleUpdateQuantity = (productId, newQuantity) => {
+                if (newQuantity <= 0) {
+                    handleRemoveItem(productId);
+                } else {
+                    setCartItems(prev => prev.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item));
+                }
+            };
+            
+            const handleRemoveItem = (productId) => {
+                setCartItems(prev => prev.filter(item => item.id !== productId));
+            };
+            
+            const cartItemCount = useMemo(() => cartItems.reduce((total, item) => total + item.quantity, 0), [cartItems]);
+
+            const renderPage = () => {
+                switch (page) {
+                    case 'home': return <HomePage setPage={setPage} onAddToCart={handleAddToCart} />;
+                    case 'shop': return <ShopPage onAddToCart={handleAddToCart} />;
+                    default: return <HomePage setPage={setPage} onAddToCart={handleAddToCart} />;
+                }
+            };
+
+            return (
+                <div className="font-sans bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                    <Header 
+                        setPage={setPage} 
+                        activePage={page} 
+                        theme={theme}
+                        setTheme={setTheme}
+                        onCartClick={() => setIsCartOpen(true)}
+                        cartItemCount={cartItemCount}
+                        onAddToCart={handleAddToCart}
+                    />
+                    <main className="animate-fadeIn">
+                        {renderPage()}
+                    </main>
+
+                    <CartPanel 
+                        isOpen={isCartOpen} 
+                        onClose={() => setIsCartOpen(false)} 
+                        cartItems={cartItems}
+                        onUpdateQuantity={handleUpdateQuantity}
+                        onRemoveItem={handleRemoveItem}
+                    />
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
 </html>

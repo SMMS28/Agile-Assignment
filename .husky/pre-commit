@@ -1,5 +1,5 @@
-#/usr/bin/env python /Users/mohansunkara/Downloads/run_clustering.py sh
-. ""/bin/_/husky.sh"
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
 # Run lint-staged
 npm run lint --silent || true
