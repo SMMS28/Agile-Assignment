@@ -22,17 +22,20 @@ Thank you for your interest in contributing to Marketify! This document provides
 ## 📋 Development Guidelines
 
 ### Code Style
+
 - Use TypeScript for all new code
 - Follow the existing code style and patterns
 - Use meaningful variable and function names
 - Add comments for complex logic
 
 ### Commits
+
 - Use conventional commit messages
 - Keep commits focused and atomic
 - Include tests for new features
 
 ### Pull Requests
+
 - Create a feature branch from `main`
 - Include a clear description of changes
 - Add screenshots for UI changes
@@ -41,6 +44,7 @@ Thank you for your interest in contributing to Marketify! This document provides
 ## 🐛 Reporting Issues
 
 When reporting issues, please include:
+
 - Clear description of the problem
 - Steps to reproduce
 - Expected vs actual behavior
@@ -50,6 +54,7 @@ When reporting issues, please include:
 ## ✨ Feature Requests
 
 For feature requests, please:
+
 - Check existing issues first
 - Provide a clear use case
 - Include mockups or examples if possible
@@ -58,6 +63,7 @@ For feature requests, please:
 ## 🧪 Testing
 
 Before submitting a PR:
+
 - Run the linter: `npm run lint`
 - Run tests: `npm run test`
 - Test in multiple browsers
@@ -79,18 +85,21 @@ Before submitting a PR:
 ## 🔧 Technical Guidelines
 
 ### React Components
+
 - Use functional components with hooks
 - Implement proper TypeScript types
 - Use meaningful prop names
 - Handle loading and error states
 
 ### Styling
+
 - Use Tailwind CSS classes
 - Follow the existing color scheme
 - Ensure dark mode compatibility
 - Use consistent spacing scale
 
 ### Performance
+
 - Optimize images and assets
 - Use React.memo for expensive components
 - Implement proper loading states
@@ -105,6 +114,7 @@ Before submitting a PR:
 ## 🏆 Recognition
 
 Contributors will be recognized in:
+
 - README.md contributors section
 - Release notes
 - Project documentation

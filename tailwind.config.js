@@ -1,17 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
   darkMode: 'class',
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       animation: {
-        'fadeInUp': 'fadeInUp 0.5s ease-out forwards',
-        'fadeIn': 'fadeIn 0.5s ease-out forwards',
-        'fadeInDown': 'fadeInDown 0.3s ease-out forwards',
-        'slideInLeft': 'slideInLeft 0.5s ease-out forwards',
+        fadeInUp: 'fadeInUp 0.5s ease-out forwards',
+        fadeIn: 'fadeIn 0.5s ease-out forwards',
+        fadeInDown: 'fadeInDown 0.3s ease-out forwards',
+        slideInLeft: 'slideInLeft 0.5s ease-out forwards',
       },
       keyframes: {
         fadeInUp: {

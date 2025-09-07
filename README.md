@@ -8,8 +8,8 @@ A modern, responsive e-commerce marketplace built with React, TypeScript, and Ta
 
 - 🏠 **Home Page** - Hero section with featured products
 - 🛒 **Shopping Cart** - Add/remove items with quantity management
-- 🔍 **Search Functionality** - Real-time product search
-- 🌙 **Dark/Light Theme** - Toggle between themes with persistence
+ 
+ 
 - 📱 **Responsive Design** - Mobile-first approach
 - 🎨 **Smooth Animations** - Beautiful transitions and hover effects
 - 🏷️ **Category Filtering** - Browse products by category
@@ -33,22 +33,27 @@ A modern, responsive e-commerce marketplace built with React, TypeScript, and Ta
 ## 📦 Installation
 
 ### Prerequisites
+
 - Node.js (version 16 or higher)
 - npm or yarn
 
 ### Setup
+
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/marketify.git
    cd marketify
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -99,19 +104,17 @@ Configuration Files:
 ## 🎨 Features Overview
 
 ### Shopping Experience
+
 - Browse products with beautiful card layouts
 - Filter by categories (Fashion, Electronics, Home & Garden, etc.)
-- Real-time search with instant results
+ 
 - Add items to cart with quantity management
 - Responsive cart panel with smooth animations
 
-### Theme System
-- Light and dark mode support
-- Theme persistence across sessions
-- Smooth transitions between themes
-- System preference detection
+ 
 
 ### Seller Features
+
 - Become a seller page with step-by-step guide
 - AI-powered product description generation
 - Item listing modal with form validation
@@ -120,9 +123,11 @@ Configuration Files:
 ## 🔧 Configuration
 
 ### Tailwind CSS
+
 The project uses Tailwind CSS for styling. Custom animations and configurations are defined in `tailwind.config.js`.
 
 ### Icons
+
 Currently uses emoji-based icons for immediate functionality. To upgrade to Lucide React icons:
 
 1. Install Lucide React: `npm install lucide-react`
@@ -139,6 +144,7 @@ Currently uses emoji-based icons for immediate functionality. To upgrade to Luci
 ## 📱 Responsive Design
 
 The application is built with a mobile-first approach and includes:
+
 - Responsive navigation with mobile menu
 - Adaptive product grids
 - Touch-friendly interactions
@@ -166,6 +172,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you have any questions or need help, please:
+
 - Open an issue on GitHub
 - Check the [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md) for detailed setup guide
 
