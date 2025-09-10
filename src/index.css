@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: transparent;
+}
+
+html {
+  background: transparent;
+}
+
+#root {
+  background: transparent;
+}
+
 @layer base {
   html {
     font-family: system-ui, sans-serif;

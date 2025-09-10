@@ -3,25 +3,16 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
 // Type imports
-import type { Page, Product, WishlistItem, User } from './types'
+import type { Page, Product, WishlistItem } from './types'
 
 // Component imports
 import { FloatingHeaderBar } from './components/layout/Header'
 import { Footer } from './components/layout/Footer'
-import { FloatingSideControls } from './components/layout/FloatingSideControls'
-import { FloatingProfileButton } from './components/layout/FloatingProfileButton'
 import { HomePage } from './pages/HomePage'
 import { AboutPage } from './pages/AboutPage'
-import { MapPage } from './pages/MapPage'
-import { ShopPage } from './pages/ShopPage'
-import { ProfilePage } from './pages/ProfilePage'
-import { SettingsPage } from './pages/SettingsPage'
-import { AuthModal } from './components/modals/AuthModal'
-import { WishlistPanel } from './components/panels/WishlistPanel'
-import { DashboardPanel } from './components/panels/DashboardPanel'
 
 // Icon imports
-import { X } from './components/icons'
+import { X, Sun, Moon } from './components/icons'
 
 // Constants
 import { THEME } from './constants/theme'
@@ -37,22 +28,14 @@ const App: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false)
   const [globalSearch, setGlobalSearch] = useState('')
   const [animationKey, setAnimationKey] = useState(0)
-  
-  // Authentication state
-  const [user, setUser] = useState<User | null>(null)
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false)
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false)
 
   // Effects
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
     const savedWishlist = localStorage.getItem('wishlist')
-    const savedUser = localStorage.getItem('user')
 
     if (savedTheme === 'dark') setIsDark(true)
     if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist))
-    if (savedUser) setUser(JSON.parse(savedUser))
   }, [])
 
   useEffect(() => {
@@ -99,21 +82,6 @@ const App: React.FC = () => {
     }
   }, [globalSearch])
 
-  // Authentication handlers
-  const handleLogin = useCallback((userData: User) => {
-    setUser(userData)
-    setIsAuthOpen(false)
-    localStorage.setItem('user', JSON.stringify(userData))
-  }, [])
-
-  const handleLogout = useCallback(() => {
-    setUser(null)
-    localStorage.removeItem('user')
-  }, [])
-
-  // Wishlist count
-  const wishlistCount = wishlistItems.length
-
   // Render page content
   const renderPage = () => {
     switch (page) {
@@ -127,20 +95,6 @@ const App: React.FC = () => {
         )
       case 'about':
         return <AboutPage />
-      case 'shop':
-        return (
-          <ShopPage
-            onToggleWishlist={handleToggleWishlist}
-            isInWishlist={isInWishlist}
-            initialQuery={globalSearch}
-          />
-        )
-      case 'map':
-        return <MapPage user={user} onLogout={handleLogout} />
-      case 'profile':
-        return <ProfilePage user={user} onLogout={handleLogout} />
-      case 'settings':
-        return <SettingsPage user={user} isDark={isDark} onToggleTheme={handleToggleTheme} />
       // Add other page cases as needed
       default:
         return (
@@ -167,7 +121,7 @@ const App: React.FC = () => {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
         
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-10px); }
@@ -176,16 +130,10 @@ const App: React.FC = () => {
         .animate-fadeInDown { animation: fadeInDown 0.3s ease-out forwards; }
 
         @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-100%); }
+          from { opacity: 0; transform: translateX(-20px); }
           to { opacity: 1; transform: translateX(0); }
         }
-        .animate-slideInLeft { animation: slideInLeft 0.3s ease-out forwards; }
-
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(100%); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        .animate-slideInRight { animation: slideInRight 0.3s ease-out forwards; }
+        .animate-slideInLeft { animation: slideInLeft 0.5s ease-out forwards; }
       `}</style>
 
       {/* Header */}
@@ -199,7 +147,7 @@ const App: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      {/* Search Bar */}
+      {/* Search Bar - Simplified for now */}
       {showSearch && (
         <div className="fixed top-6 right-6 z-50 w-80">
           <div className="relative">
@@ -223,50 +171,25 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Floating Side Controls */}
-      <FloatingSideControls
-        isDark={isDark}
-        onToggleTheme={handleToggleTheme}
-        wishlistCount={wishlistCount}
-        onWishlistClick={() => setIsWishlistOpen(true)}
-        showSearch={showSearch}
-        onToggleSearch={() => setShowSearch((v) => !v)}
-        user={user}
-        onDashboardClick={() => setIsDashboardOpen(true)}
-      />
+      {/* Floating Controls - Simplified for now */}
+      <div className={`fixed top-6 right-6 z-50 flex items-center space-x-3 transition-opacity duration-200 ${showSearch ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <button
+          onClick={() => setShowSearch(!showSearch)}
+          className={`p-3 rounded-full backdrop-blur-xl ${THEME.glassmorphism.button} shadow-lg hover:shadow-xl text-slate-800 dark:text-slate-200 transition-all duration-300`}
+        >
+          🔍
+        </button>
+        <button
+          onClick={handleToggleTheme}
+          className={`p-3 rounded-full backdrop-blur-xl ${THEME.glassmorphism.button} shadow-lg hover:shadow-xl text-slate-800 dark:text-slate-200 transition-all duration-300`}
+        >
+          {isDark ? <Sun /> : <Moon />}
+        </button>
+      </div>
 
-      {/* Profile Button */}
-      <FloatingProfileButton 
-        onClick={() => setIsAuthOpen(true)} 
-        user={user} 
-        onLogout={handleLogout}
-        onDashboard={() => setIsDashboardOpen(true)}
-      />
+      {/* Profile Button - TODO: Add authentication modal */}
 
-      {/* Modals and Panels */}
-      <AuthModal 
-        isOpen={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
-        onLogin={handleLogin} 
-      />
-      
-      <WishlistPanel
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistItems={wishlistItems}
-        onRemoveItem={(productId) => {
-          setWishlistItems(prev => prev.filter(item => item.id !== productId))
-        }}
-      />
-      
-      <DashboardPanel
-        isOpen={isDashboardOpen}
-        onClose={() => setIsDashboardOpen(false)}
-        user={user}
-        onNavigateToProfile={() => setPage('profile')}
-        onNavigateToSettings={() => setPage('settings')}
-        onStartSelling={() => setPage('sell')}
-      />
+      {/* TODO: Add modals and other components as separate files */}
     </div>
   )
 }

@@ -122,7 +122,7 @@
 
       // Icon components
       const Store = () => <span className="text-2xl">🏪</span>
-      const ShoppingCart = () => <span className="text-xl">🛒</span>
+      const Heart = () => <span className="text-xl">❤️</span>
       const Menu = () => <span className="text-xl">☰</span>
       const ShieldCheck = () => <span className="text-2xl">🛡️</span>
       const Headset = () => <span className="text-2xl">🎧</span>
@@ -135,7 +135,7 @@
       const Trash2 = () => <span className="text-lg">🗑️</span>
 
       // Product Card Component
-      const ProductCard = ({ product, onAddToCart }) => (
+      const ProductCard = ({ product, onAddToWishlist }) => (
         <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group">
           <div className="overflow-hidden">
             <img
@@ -157,10 +157,10 @@
                 ${product.price.toFixed(2)}
               </span>
               <button
-                onClick={() => onAddToCart(product)}
+                onClick={() => onAddToWishlist(product)}
                 className="bg-amber-50 text-amber-600 font-semibold py-2 px-4 rounded-lg hover:bg-amber-100 transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
               >
-                <ShoppingCart /> Add to Cart
+                <Heart /> Add to Wishlist
               </button>
             </div>
           </div>
@@ -171,8 +171,8 @@
       const Header = ({
         setPage,
         activePage,
-        onCartClick,
-        cartItemCount,
+        onWishlistClick,
+        wishlistCount,
       }) => {
         const navLinkClasses = (page) =>
           `pb-1 border-b-2 transition-all duration-300 ${activePage === page ? 'text-amber-500 border-amber-500' : 'text-slate-600 border-transparent hover:text-amber-500'}`
@@ -222,13 +222,13 @@
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={onCartClick}
+                  onClick={onWishlistClick}
                   className="p-2 rounded-full text-slate-600 hover:text-amber-500 hover:bg-slate-100 transition-all duration-300 transform hover:scale-110 relative"
                 >
-                  <ShoppingCart />
-                  {cartItemCount > 0 && (
+                  <Heart />
+                  {wishlistCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-fadeIn">
-                      {cartItemCount}
+                      {wishlistCount}
                     </span>
                   )}
                 </button>
@@ -242,7 +242,7 @@
       }
 
       // Home Page Component
-      const HomePage = ({ setPage, onAddToCart }) => (
+      const HomePage = ({ setPage, onAddToWishlist }) => (
         <>
           <section
             className="bg-cover bg-center text-white"
@@ -279,7 +279,7 @@
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {ALL_PRODUCTS.slice(0, 4).map((p, i) => (
                   <div key={p.id} className="animate-fadeInUp">
-                    <ProductCard product={p} onAddToCart={onAddToCart} />
+                    <ProductCard product={p} onAddToWishlist={onAddToWishlist} />
                   </div>
                 ))}
               </div>
@@ -289,7 +289,7 @@
       )
 
       // Shop Page Component
-      const ShopPage = ({ onAddToCart }) => {
+      const ShopPage = ({ onAddToWishlist }) => {
         const [filter, setFilter] = useState('All')
         const filteredProducts =
           filter === 'All' ? ALL_PRODUCTS : ALL_PRODUCTS.filter((p) => p.category === filter)
@@ -323,20 +323,15 @@
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {filteredProducts.map((p) => (
-                <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} />
+                <ProductCard key={p.id} product={p} onAddToWishlist={onAddToWishlist} />
               ))}
             </div>
           </div>
         )
       }
 
-      // Cart Panel Component
-      const CartPanel = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) => {
-        const subtotal = useMemo(
-          () => cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
-          [cartItems]
-        )
-
+      // Wishlist Panel Component
+      const WishlistPanel = ({ isOpen, onClose, wishlistItems, onRemoveItem }) => {
         return (
           <>
             <div
@@ -347,7 +342,7 @@
               className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}
             >
               <div className="p-6 border-b flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Your Cart</h2>
+                <h2 className="text-2xl font-bold">Your Wishlist</h2>
                 <button
                   onClick={onClose}
                   className="text-slate-500 hover:text-slate-800"
@@ -356,19 +351,17 @@
                 </button>
               </div>
 
-              {cartItems.length === 0 ? (
+              {wishlistItems.length === 0 ? (
                 <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
                   <div className="text-slate-300 mb-4 text-6xl">
-                    <ShoppingCart />
+                    <Heart />
                   </div>
-                  <h3 className="text-xl font-semibold text-slate-700">
-                    Your cart is empty
-                  </h3>
-                  <p className="text-slate-500 mt-2">Looks like you haven't added anything yet.</p>
+                  <h3 className="text-xl font-semibold text-slate-700">Your wishlist is empty</h3>
+                  <p className="text-slate-500 mt-2">Start saving items you love.</p>
                 </div>
               ) : (
                 <div className="flex-grow overflow-y-auto p-6 space-y-4">
-                  {cartItems.map((item) => (
+                  {wishlistItems.map((item) => (
                     <div key={item.id} className="flex items-center space-x-4 animate-fadeIn">
                       <img
                         src={item.imageUrl}
@@ -377,26 +370,7 @@
                       />
                       <div className="flex-grow">
                         <h4 className="font-semibold">{item.name}</h4>
-                        <p className="text-sm text-slate-500">
-                          ${item.price.toFixed(2)}
-                        </p>
-                        <div className="flex items-center mt-2">
-                          <button
-                            onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                            className="p-1 border rounded-md"
-                          >
-                            <Minus />
-                          </button>
-                          <span className="px-3 font-semibold">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="p-1 border rounded-md"
-                          >
-                            <Plus />
-                          </button>
-                        </div>
+                        <p className="text-sm text-slate-500">${item.price.toFixed(2)}</p>
                       </div>
                       <button
                         onClick={() => onRemoveItem(item.id)}
@@ -409,21 +383,6 @@
                 </div>
               )}
 
-              {cartItems.length > 0 && (
-                <div className="p-6 border-t">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-medium text-slate-600">
-                      Subtotal
-                    </span>
-                    <span className="text-2xl font-bold">
-                      ${subtotal.toFixed(2)}
-                    </span>
-                  </div>
-                  <button className="w-full bg-amber-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-600 transition-all duration-300 shadow-lg">
-                    Proceed to Checkout
-                  </button>
-                </div>
-              )}
             </div>
           </>
         )
@@ -432,51 +391,32 @@
       // Main App Component
       const App = () => {
         const [page, setPage] = useState('home')
-        const [cartItems, setCartItems] = useState([])
-        const [isCartOpen, setIsCartOpen] = useState(false)
+        const [wishlistItems, setWishlistItems] = useState([])
+        const [isWishlistOpen, setIsWishlistOpen] = useState(false)
 
-        const handleAddToCart = (product) => {
-          setCartItems((prevItems) => {
-            const existingItem = prevItems.find((item) => item.id === product.id)
-            if (existingItem) {
-              return prevItems.map((item) =>
-                item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-              )
-            }
-            return [...prevItems, { ...product, quantity: 1 }]
+        const handleAddToWishlist = (product) => {
+          setWishlistItems((prevItems) => {
+            const exists = prevItems.some((item) => item.id === product.id)
+            if (exists) return prevItems
+            return [...prevItems, product]
           })
-          setIsCartOpen(true)
+          setIsWishlistOpen(true)
         }
 
-        const handleUpdateQuantity = (productId, newQuantity) => {
-          if (newQuantity <= 0) {
-            handleRemoveItem(productId)
-          } else {
-            setCartItems((prev) =>
-              prev.map((item) =>
-                item.id === productId ? { ...item, quantity: newQuantity } : item
-              )
-            )
-          }
+        const handleRemoveWishlistItem = (productId) => {
+          setWishlistItems((prev) => prev.filter((item) => item.id !== productId))
         }
 
-        const handleRemoveItem = (productId) => {
-          setCartItems((prev) => prev.filter((item) => item.id !== productId))
-        }
-
-        const cartItemCount = useMemo(
-          () => cartItems.reduce((total, item) => total + item.quantity, 0),
-          [cartItems]
-        )
+        const wishlistCount = useMemo(() => wishlistItems.length, [wishlistItems])
 
         const renderPage = () => {
           switch (page) {
             case 'home':
-              return <HomePage setPage={setPage} onAddToCart={handleAddToCart} />
+              return <HomePage setPage={setPage} onAddToWishlist={handleAddToWishlist} />
             case 'shop':
-              return <ShopPage onAddToCart={handleAddToCart} />
+              return <ShopPage onAddToWishlist={handleAddToWishlist} />
             default:
-              return <HomePage setPage={setPage} onAddToCart={handleAddToCart} />
+              return <HomePage setPage={setPage} onAddToWishlist={handleAddToWishlist} />
           }
         }
 
@@ -485,17 +425,16 @@
             <Header
               setPage={setPage}
               activePage={page}
-              onCartClick={() => setIsCartOpen(true)}
-              cartItemCount={cartItemCount}
+              onWishlistClick={() => setIsWishlistOpen(true)}
+              wishlistCount={wishlistCount}
             />
             <main className="animate-fadeIn">{renderPage()}</main>
 
-            <CartPanel
-              isOpen={isCartOpen}
-              onClose={() => setIsCartOpen(false)}
-              cartItems={cartItems}
-              onUpdateQuantity={handleUpdateQuantity}
-              onRemoveItem={handleRemoveItem}
+            <WishlistPanel
+              isOpen={isWishlistOpen}
+              onClose={() => setIsWishlistOpen(false)}
+              wishlistItems={wishlistItems}
+              onRemoveItem={handleRemoveWishlistItem}
             />
           </div>
         )

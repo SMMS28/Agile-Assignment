@@ -1,13 +1,13 @@
 # 🛍️ Marketify - E-commerce Marketplace
 
-A modern, responsive e-commerce marketplace built with React, TypeScript, and Tailwind CSS. Features a beautiful UI with dark/light theme support, shopping cart functionality, and AI-powered product description generation.
+A modern, responsive e-commerce marketplace built with React, TypeScript, and Tailwind CSS. Features a beautiful UI with dark/light theme support, wishlist functionality, and AI-powered product description generation.
 
 ![Marketify Preview](https://images.unsplash.com/photo-1481437156560-3205f6a85705?q=80&w=1200&h=600&auto=format&fit=crop)
 
 ## ✨ Features
 
 - 🏠 **Home Page** - Hero section with featured products
-- 🛒 **Shopping Cart** - Add/remove items with quantity management
+- ❤️ **Wishlist** - Save/remove items you love
  
  
 - 📱 **Responsive Design** - Mobile-first approach
@@ -108,8 +108,8 @@ Configuration Files:
 - Browse products with beautiful card layouts
 - Filter by categories (Fashion, Electronics, Home & Garden, etc.)
  
-- Add items to cart with quantity management
-- Responsive cart panel with smooth animations
+- Save items to wishlist
+- Slide-out wishlist panel with smooth animations
 
  
 

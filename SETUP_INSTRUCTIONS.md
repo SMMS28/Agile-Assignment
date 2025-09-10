@@ -6,7 +6,7 @@ This is a modern React-based e-commerce marketplace application called "Marketif
 
  - Beautiful, responsive UI
 - Product browsing and filtering by category
-- Shopping cart functionality
+- Wishlist functionality
  
 - Seller onboarding with AI-powered product description generation
 - Smooth animations and transitions
@@ -43,7 +43,7 @@ The application currently uses temporary emoji icons that work without any depen
 const Store = () => <span className="text-2xl">🏪</span>;
 
 // With this proper import:
-import { Store, Search, ShoppingCart, ... } from 'lucide-react';
+import { Store, Search, Heart, ... } from 'lucide-react';
 ```
 
 ### 3. Start Development Server
@@ -86,12 +86,10 @@ npm run preview
 - Categories: Fashion, Electronics, Home & Garden, Jewelry, Crafts, Collectibles
 - Responsive product cards with hover effects
 
-### 🛒 Shopping Cart
+### ❤️ Wishlist
 
 - Add/remove items
-- Quantity adjustment
-- Real-time total calculation
-- Slide-out cart panel
+- Slide-out wishlist panel
 
  
 
